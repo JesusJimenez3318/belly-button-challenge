@@ -20,7 +20,7 @@ d3.json("data/samples.json").then (function(data)
     
     trace1 = {
         x: sampleValues.slice(0,10).reverse(),
-        y: otuId.slice(0,10).map(otuid =>`OTU `+ otuid.toString()).reverse(),
+        y: otuId.slice(0,10).map(otuid =>`OTU `+ otuid).reverse(),
         text: otuLabels.slice(0,10).reverse(),
         type: 'bar',
         orientation: 'h'
@@ -79,37 +79,68 @@ bubbleGraph("940")
 
 
 function demoGraph(demoGraphInfo){
-    d3.json("data/samples.json").then (function(data) 
-    {
-    let tableValues = data.metadata.filter(subject =>subject.id.toString == demoGraphInfo)
+    d3.json("data/samples.json").then (function(data) {
+    let tableValues = data.metadata.filter(subject =>subject.id == demoGraphInfo)[0]
+    let dataValues = d3.select("#sample-metadata")
+
+    //clear selection of values
+
+    dataValues.html("");
+    Object.entries(tableValues)
+    .forEach(([x,y]) =>  dataValues
+    .append("p").text(`${x},${y}`))
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 })}
 
+demoGraph("940")
 
+
+function gaugeGraph(gaugeData){
+    d3.json("data/samples.json").then (function(data) {
+    let wfreq = data.metadata.filter(subject =>subject.id == gaugeData)[0]["wfreq"]
+
+let datagauge = [
+    {
+      value: wfreq,
+      title: { text: "Belly Button Washing Frequency <br><sub> Scrubs per Week</sub>" },
+      type: "indicator",
+      mode: "gauge+number",
+      gauge: {
+        axis: { range: [null, 9] },
+        bar: { color: "royalblue" },
+        borderwidth:1,
+        steps: [
+          { range: [0, 1], color: "F94144" },
+          { range: [1,2], color: "F3722C" },
+          { range: [2,3], color: "F8961E" },
+          { range: [3,4], color: "F9844A" },
+          { range: [4,5], color: "F9C74F" },
+          { range: [5,6], color: "90BE6D" },
+          { range: [6,7], color: "358f80" },
+          { range: [7,8], color: "248277" },
+          { range: [8,9], color: "14746f" }
+        ],
+        threshold: {
+          line: { color: "red", width: 4 },
+          thickness: 0.75,
+          value: 9
+        }
+      }
+    }
+  ];
+
+  let layout = { width: 600, height: 450, margin: { t: 0, b: 0 } };
+  Plotly.newPlot('gauge', datagauge, layout);
+})};
+
+gaugeGraph("940")
 
 
 function optionChanged(id) {
     barGraph(id);
     bubbleGraph(id);
-    //demoGraph(id);
+    demoGraph(id);
+    gaugeGraph(id);
 };
 
 
