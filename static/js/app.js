@@ -88,7 +88,7 @@ function demoGraph(demoGraphInfo){
     dataValues.html("");
     Object.entries(tableValues)
     .forEach(([x,y]) =>  dataValues
-    .append("p").text(`${x},${y}`))
+    .append("p").text(`${x}: ${y}`))
     
 })}
 
